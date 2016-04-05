@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -63,9 +65,22 @@ public class QuanLySinhVien extends JFrame{
 			table.getColumnModel().getColumn(3).setMinWidth(200);
 			// Sua ten Colum
 			// Bat su kien click vao cac item cho jtable
-			ValidateJTable listenner = new ValidateJTable(table);
-			table.getSelectionModel().addListSelectionListener(listenner);
-			table.getColumnModel().getSelectionModel().addListSelectionListener(listenner);
+			//ValidateJTable listenner = new ValidateJTable(table);
+			//table.getSelectionModel().addListSelectionListener(listenner);
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(e.getClickCount() == 1){
+						int row = table.getSelectedRow();
+						txtMaSV.setText(table.getModel().getValueAt(row,0).toString());
+						txtTenSV.setText(table.getModel().getValueAt(row, 1).toString());
+						txtDiaChi.setText(table.getModel().getValueAt(row, 2).toString());
+						txtNgaySinh.setText(table.getModel().getValueAt(row, 3).toString());
+						txtTenLop.setText(table.getModel().getValueAt(row, 4).toString());
+					}
+				}
+				
+			});
 			
 			JScrollPane jScrollPane = new JScrollPane(table);
 			// Tao ra Panel Nam o duoi (Bottom)
@@ -174,39 +189,7 @@ public class QuanLySinhVien extends JFrame{
 		
 	}
 	
-	// Lang nghe xu kien Jtable
-	class ValidateJTable implements ListSelectionListener{
-		JTable table;
-
-		public ValidateJTable(JTable table) {
-			super();
-			this.table = table;
-		}
-
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			
-			if (e.getSource() == table.getSelectionModel() && table.getRowSelectionAllowed() && (check != 3)) {
-				
-				  // Lay ra mot dong
-			      Vector row = new Vector();
-			      // Lay ra index cua mot dong
-			      int last = table.getSelectedRow();
-			      // Tong so cot
-			      int colCount = table.getColumnCount();
-			      // Lam nguoc voi TableModel, can xem lai table model
-			      for(int i = 0; i < colCount; i++){
-			    	  row.addElement(table.getValueAt(last, i));
-			      }
-			      txtTenSV.setText(row.elementAt(1).toString());
-			      txtMaSV.setText(row.elementAt(0).toString());
-			      txtDiaChi.setText(row.elementAt(2).toString());
-			      txtNgaySinh.setText(row.elementAt(3).toString());
-			      txtTenLop.setText(row.elementAt(4).toString());
-			    } 
-		}
-		
-	}
+	
 	
 	/**
 	 * 					Thuc hien thao tac MySql
