@@ -1,0 +1,23 @@
+package RanSanMoi;
+
+import java.awt.Frame;
+import java.awt.HeadlessException;
+
+public class LuuDiemFrame extends Frame{
+
+	int diem;
+	String ten;
+	public LuuDiemFrame() throws HeadlessException {
+		this.setTitle("Luu Diem");
+		this.setBounds(50, 50, 700, 500);
+		
+		BestCore bestCore = new BestCore("/opt/lampp/htdocs/diemcao.dat");
+    	//String name = JOptionPane.showInputDialog("Nhap Ten Vao Di Thang Kia: ");
+        NguoiChoi nc = new NguoiChoi(5, "tinh");
+        bestCore.LuuDiemCao(nc);
+        this.show();
+
+	}
+	
+	
+}

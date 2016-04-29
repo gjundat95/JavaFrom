@@ -1,0 +1,128 @@
+package QuanLySinhVien;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+
+public class QuanLySinhVien extends JFrame{
+	
+	private MySqlHelper conn;
+	private TableModel tbModel;
+	private JTable table;
+	private JPanel home,top,bottom,layoutInput,layoutButton;
+	private JButton btnThem,btnSua,btnXoa,btnLuu,btnHuy;
+	private JLabel lblMaSV,lblTenSV,lblDiaChi,lblNgaySinh,lblTenLop;
+	private JTextField txtMaSV,txtTenSV,txtDiaChi,txtNgaySinh,txtTenLop;
+	
+	public static void main(String[] args) {
+		try {
+			MySqlHelper helper = new MySqlHelper();
+			SinhVien sv = new SinhVien(4, "Pham Xuan Tu", "Thai Nguyen", "18.02.2015", "K12B");
+			helper.updateDB(sv);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		new QuanLySinhVien();
+	}
+	
+	public QuanLySinhVien(){
+		this.setTitle("Quan Ly Sinh Vien");
+		this.setBounds(0, 0, 800, 700);
+		home = new JPanel(new BorderLayout());
+		//home.setPreferredSize(new Dimension(700, 500));
+		
+		try {
+			
+			// Khoi tao SqlHelper
+			conn = new MySqlHelper();
+			// Lay ResultSet tu lop SqlHelper
+			ResultSet rs = conn.getData("Select * From tblSinhVien");
+			// Do du lieu rs vao Table Model, va khoi tao TableModel
+			tbModel = new TableModel(rs);
+			// Khoi tao table va thao tac voi table
+			table = new JTable(tbModel);
+			table.getColumnModel().getColumn(0).setMaxWidth(50);
+			table.getColumnModel().getColumn(1).setMinWidth(150);
+			table.getColumnModel().getColumn(2).setMinWidth(200);
+			table.getColumnModel().getColumn(3).setMinWidth(200);
+			JScrollPane jScrollPane = new JScrollPane(table);
+			// Tao ra Panel Nam o duoi (Bottom)
+			bottom = new JPanel(new BorderLayout());
+			bottom.setPreferredSize(new Dimension(700, 300));
+			bottom.add(jScrollPane,BorderLayout.CENTER);
+
+			// Tao ra panel nam o tren(Top)
+			top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			// Tao ra may cai Button
+			layoutButton = new JPanel(new FlowLayout(FlowLayout.LEFT,10,10));
+			btnThem = new JButton("Them");
+			btnSua = new JButton("Sua");
+			btnXoa = new JButton("Xoa");
+			btnLuu = new JButton("Luu");
+			btnHuy = new JButton("Huy");
+			layoutButton.add(btnThem);
+			layoutButton.add(btnSua);
+			layoutButton.add(btnXoa);
+			layoutButton.add(btnLuu);
+			layoutButton.add(btnHuy);
+			// Tao ra may o de input du lieu
+			txtMaSV = new JTextField("",10);
+			txtTenSV = new JTextField();
+			txtDiaChi = new JTextField();
+			txtNgaySinh = new JTextField();
+			txtTenLop = new JTextField();
+			lblMaSV = new JLabel("Ma SV");
+			
+			layoutInput = new JPanel(new GridLayout(0, 2));
+			layoutInput.add(new Label("Ma SV"));
+			layoutInput.add(txtMaSV);
+			layoutInput.add(new Label("Ten Sinh Vien"));
+			layoutInput.add(txtTenSV);
+			layoutInput.add(new Label("Dia Chi"));
+			layoutInput.add(txtDiaChi);
+			layoutInput.add(new Label("Ngay Sinh"));
+			layoutInput.add(txtNgaySinh);
+			layoutInput.add(new Label("Ten Lop"));
+			layoutInput.add(txtTenLop);
+
+			// Add top
+			top.add(layoutInput);
+			top.add(layoutButton);
+			
+			// Add home
+			home.add(top, BorderLayout.NORTH);
+			home.add(bottom,BorderLayout.SOUTH);
+			
+			
+			
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+		this.add(home);
+		this.pack();
+		this.setVisible(true);
+	}
+
+}

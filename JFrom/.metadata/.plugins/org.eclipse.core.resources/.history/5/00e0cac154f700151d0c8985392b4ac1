@@ -1,0 +1,87 @@
+package QuanLySinhVien;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+/**
+ * Ham ho tro ket noi csdl MySql
+ */
+public class MySqlHelper {
+	
+	public Connection conn;
+	public String db = "QuanLySinhVien";
+	public String url = "jdbc:mysql://127.0.0.1:3306/";
+	public String className = "com.mysql.jdbc.Driver";
+	public String user = "root";
+	public String pass = "";
+
+	
+	public MySqlHelper() throws ClassNotFoundException {
+		
+		// Them lop driver mysql
+		Class.forName(className);
+		// Khoi tao doi tuong conn
+		try {
+			conn = (Connection) DriverManager.getConnection(url+db,user,pass);
+			System.out.println("Da ket noi thanh cong.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Ket noi bi loi.");
+		}
+	}
+	
+	/**
+	 * 					Get Data From Query
+	 * @param query		Query is MySql
+	 * @return			ResultSet
+	 */
+	public ResultSet getData(String query){
+		
+		ResultSet resultSet = null;
+		try {
+			Statement statement = (Statement)conn.createStatement();
+			resultSet = statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	public void insertDB(SinhVien sv, String table){
+		String query = "Insert Into tblSinhVien " + "(MaSV, TenSV, DiaChi, NgaySinh, TenLop) " + "Values(?,?,?,?,?)";
+		try {
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setInt(1, sv.getMaSV());
+			statement.setString(2, sv.getTenSV());
+			statement.setString(3, sv.getDiaChi());
+			statement.setString(4, sv.getNgaySinh());
+			statement.setString(5, sv.getTenLop());
+			int rowsInserter = statement.executeUpdate();
+			if(rowsInserter > 1){
+				System.out.println("Da them thanh cong: "+rowsInserter+" dong.");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 					Ham dung de dong ket noi csdl
+	 */
+	public void close(){
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+
+}
